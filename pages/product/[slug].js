@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 const Slug = () => {
   const router = useRouter();
   const { slug } = router.query;
+
+  const [pin, setpin] = useState();
+  const [service, setservice] = useState(null);
+
+  const checkServicebility = async () => {
+    let pins = await fetch("http://localhost:3000/api/pincode");
+
+    let pincode = await pins.json();
+
+    if (pincode.includes(parseInt(pin))) {
+      setservice(true);
+    } else {
+      setservice(false);
+    }
+  };
+
+  const onChnagePin = (e) => {
+    setpin(e.target.value);
+  };
   return (
     <div>
       Slug==={slug}
@@ -163,9 +182,14 @@ const Slug = () => {
                 <span className="title-font font-medium text-2xl text-gray-900">
                   $58.00
                 </span>
-                <button className="flex ml-14 text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded">
+                <button className="flex ml-8 text-white bg-pink-500 border-0 py-2 md:px-6 px-2 focus:outline-none hover:bg-pink-600 rounded">
+                  Buy now
+                </button>
+
+                <button className="flex ml-4 text-white bg-pink-500 border-0 py-2 md:px-6 px-2  focus:outline-none hover:bg-pink-600 rounded">
                   Add to card
                 </button>
+
                 <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
                     fill="currentColor"
@@ -179,6 +203,34 @@ const Slug = () => {
                   </svg>
                 </button>
               </div>
+
+              <div className="pin mt-6 flex space-x-2 text-sm">
+                <input
+                  type="text"
+                  placeholder="Enter your pincode"
+                  className="px-2 border-2 border-gray-400 rounded-md"
+                  name=""
+                  id=""
+                  onChange={onChnagePin}
+                />
+                <button
+                  onClick={checkServicebility}
+                  className="flex ml-14 text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded"
+                >
+                  Check
+                </button>
+              </div>
+              {!service && service !== null && (
+                <div className="text-red-700 text-sm mt-3">
+                  Sorry! we do not deliver this pincode yet
+                </div>
+              )}
+
+              {service && service !== null && (
+                <div className="text-green-700 text-sm mt-3">
+                  Yay! this pincode is serviceable
+                </div>
+              )}
             </div>
           </div>
         </div>
