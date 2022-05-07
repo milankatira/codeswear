@@ -6,7 +6,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-const Navbar = () => {
+const Navbar = ({ card, addtoCard, removeFromCard, clearCart, subTotal }) => {
   const toggleCart = () => {
     if (ref.current.classList.contains("translate-x-full")) {
       ref.current.classList.remove("translate-x-full");
@@ -18,7 +18,7 @@ const Navbar = () => {
   };
   const ref = useRef();
   return (
-    <div className="flex flex-col md:flex-row md:justify-start justify-center items-center py-2 shadow-xl">
+    <div className="flex flex-col md:flex-row md:justify-start justify-center items-center py-2 shadow-xl sticky top-0 z-10 bg-white">
       <div className="logo mx-5">
         <Link href={"/"}>
           <a>
@@ -58,7 +58,9 @@ const Navbar = () => {
       </div>
       <div
         ref={ref}
-        className="w-72 h-full hover:shadow-md hover:transition ease-in-out delay-150 sidebar absolute top-0 right-0 bg-purple-100 p-10 transform transition-transform translate-x-full rounded-l-lg duration-800"
+        className={`w-72 h-[100vh] hover:shadow-md hover:transition ease-in-out delay-150 sidebar absolute top-0 right-0 bg-purple-100 p-10 transform transition-transform ${
+          Object.keys(card).length !== 0 ? "translate-x-0" : "translate-x-full"
+        } translate-x-full rounded-l-lg duration-800`}
       >
         <h2 className="font-bold text-xl text-center"> Shopping Cart </h2>
         <span
@@ -68,23 +70,61 @@ const Navbar = () => {
           <CancelIcon />
         </span>
         <ol className="list-decimal font-semibold">
-          <li>
-            <div className="item flex my-3">
-              <div className="w-2/3 font-semibold"> T-shirt wear the code </div>
-              <div className="w-1/3 font-semibold flex items-center justify-center text-lg">
-                <AddCircleOutlineIcon className="cursor-pointer" />
-                <span className="mx-2">1</span>
-                <RemoveCircleOutlineIcon className="cursor-pointer" />
-              </div>
-            </div>
-          </li>
+          {Object.keys(card).length === 0 && (
+            <div className="my-4 font-normal">no item in a card</div>
+          )}
+          {Object.keys(card).length > 0 &&
+            Object.keys(card).map((i) => {
+              return (
+                <li key={i}>
+                  <div className="item flex my-3">
+                    <div className="w-2/3 font-semibold"> {card[i].name}</div>
+                    <div className="w-1/3 font-semibold flex items-center justify-center text-lg">
+                      <AddCircleOutlineIcon
+                        onClick={() => {
+                          addtoCard(
+                            i,
+                            1,
+                            card[i].price,
+                            card[i].name,
+                            card[i].size,
+                            card[i].variant
+                          );
+                        }}
+                        className="cursor-pointer"
+                      />
+                      <span className="mx-2"> {card[i].qty}</span>
+                      <RemoveCircleOutlineIcon
+                        className="cursor-pointer"
+                        onClick={() => {
+                          removeFromCard(
+                            i,
+                            1,
+                            card[i].price,
+                            card[i].name,
+                            card[i].size,
+                            card[i].variant
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
         </ol>
+        <div className="font-bold my-12">subTotal: {subTotal}</div>
         <div className="flex">
-          <button className="flex mr-2 text-white bg-pink-500 border-0 py-2 px-2 focus:outline-none hover:bg-pink-600 rounded text-sm">
-            <AddShoppingCartIcon className="mr-2" /> Checkout
-          </button>
+          <Link href="/checkout">
+            <button className="flex mr-2 text-white bg-pink-500 border-0 py-2 px-2 focus:outline-none hover:bg-pink-600 rounded text-sm">
+              <AddShoppingCartIcon className="mr-2" /> Checkout
+            </button>
+          </Link>
 
-          <button className="flex mr-2 text-white bg-pink-500 border-0 py-2 px-2 focus:outline-none hover:bg-pink-600 rounded text-sm">
+          <button
+            onClick={clearCart}
+            className="flex mr-2 text-white bg-pink-500 border-0 py-2 px-2 focus:outline-none hover:bg-pink-600 rounded text-sm"
+          >
             clear cart
           </button>
         </div>

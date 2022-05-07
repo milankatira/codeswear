@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-const Slug = () => {
+const Slug = ({ addtoCard }) => {
   const router = useRouter();
   const { slug } = router.query;
 
@@ -186,7 +186,12 @@ const Slug = () => {
                   Buy now
                 </button>
 
-                <button className="flex ml-4 text-white bg-pink-500 border-0 py-2 md:px-6 px-2  focus:outline-none hover:bg-pink-600 rounded">
+                <button
+                  onClick={() => {
+                    addtoCard(slug, 1, 255, "wearthe code", "xl", "Red");
+                  }}
+                  className="flex ml-4 text-white bg-pink-500 border-0 py-2 md:px-6 px-2  focus:outline-none hover:bg-pink-600 rounded"
+                >
                   Add to card
                 </button>
 
