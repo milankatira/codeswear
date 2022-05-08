@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-const Login = () => {
+const Forgot = () => {
   return (
     <div>
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -40,49 +40,6 @@ const Login = () => {
                   placeholder="Email address"
                 />
               </div>
-              <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
-                >
-                  {" "}
-                  Remember me{" "}
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <Link href={"/forgot"}>
-                  <a
-                    className="font-medium text-pink-600 hover:text-pink-500"
-                  >
-                    {" "}
-                    Forgot your password?{" "}
-                  </a>
-                </Link>
-              </div>
             </div>
 
             <div>
@@ -105,7 +62,7 @@ const Login = () => {
                     />
                   </svg>
                 </span>
-                Sign in
+                Continue
               </button>
             </div>
           </form>
@@ -115,4 +72,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Forgot;

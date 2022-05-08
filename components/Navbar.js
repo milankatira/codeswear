@@ -6,6 +6,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 const Navbar = ({ card, addtoCard, removeFromCard, clearCart, subTotal }) => {
   const toggleCart = () => {
     if (ref.current.classList.contains("translate-x-full")) {
@@ -50,11 +51,14 @@ const Navbar = ({ card, addtoCard, removeFromCard, clearCart, subTotal }) => {
           </Link>
         </ul>
       </div>
-      <div
-        className="cart absolute right-0 top-4 mx-5 cursor-pointer"
-        onClick={toggleCart}
-      >
-        <ShoppingCartIcon className=" text-xl md:text-3xl" />
+      <div className="cart absolute right-0 top-4 mx-5 cursor-pointer">
+        <Link href="/login">
+          <AccountCircleIcon className="mr-2  text-xl md:text-3xl" />
+        </Link>
+        <ShoppingCartIcon
+          onClick={toggleCart}
+          className=" text-xl md:text-3xl"
+        />
       </div>
       <div
         ref={ref}
