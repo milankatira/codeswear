@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-const Slug = ({ addtoCard }) => {
+import Products from "../../model/Product";
+import mongoose from "mongoose";
+const Slug = ({ clearCart,addtoCard, product, variant }) => {
+  console.log(product, variant);
   const router = useRouter();
   const { slug } = router.query;
 
@@ -22,6 +25,18 @@ const Slug = ({ addtoCard }) => {
   const onChnagePin = (e) => {
     setpin(e.target.value);
   };
+
+  const [color, setcolor] = useState(product.color);
+  const [size, setsize] = useState(product.size);
+
+  const refreshVariant = () => {};
+
+  const Buynow = () => {
+    addtoCard(slug, 1, 499, product.title, size, color);
+
+    router.push("/checkout")
+  };
+
   return (
     <div>
       Slug==={slug}
@@ -149,19 +164,29 @@ const Slug = ({ addtoCard }) => {
               <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
                 <div className="flex">
                   <span className="mr-3">Color</span>
-                  <button className="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none"></button>
-                  
-                  <button className="border-2 border-gray-300 ml-1 bg-gray-700 rounded-full w-6 h-6 focus:outline-none"></button>
-                  <button className="border-2 border-gray-300 ml-1 bg-pink-500 rounded-full w-6 h-6 focus:outline-none"></button>
+
+                  {Object.keys(variant).map((data) => {
+                    return data == color ? (
+                      <button
+                        key={data}
+                        className={`border-2 border-gray-600 ml-1 bg-${data}-500 rounded-full w-6 h-6 focus:outline-none`}
+                      ></button>
+                    ) : (
+                      <button
+                        key={data}
+                        className={`border-2 border-white ml-1 bg-${data}-500 rounded-full w-6 h-6 focus:outline-none`}
+                      ></button>
+                    );
+                  })}
                 </div>
                 <div className="flex ml-6 items-center">
                   <span className="mr-3">Size</span>
+
                   <div className="relative">
                     <select className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-500 text-base pl-3 pr-10">
-                      <option>SM</option>
-                      <option>M</option>
-                      <option>L</option>
-                      <option>XL</option>
+                      {Object.keys(variant[color]).map((item) => {
+                        return <option key={item}>{item}</option>;
+                      })}
                     </select>
                     <span className="absolute right-0 top-0 h-full w-10 text-center text-gray-600 pointer-events-none flex items-center justify-center">
                       <svg
@@ -183,7 +208,10 @@ const Slug = ({ addtoCard }) => {
                 <span className="title-font font-medium text-2xl text-gray-900">
                   $58.00
                 </span>
-                <button className="flex ml-8 text-white bg-pink-500 border-0 py-2 md:px-6 px-2 focus:outline-none hover:bg-pink-600 rounded">
+                <button
+                  onClick={()=>Buynow()}
+                  className="flex ml-8 text-white bg-pink-500 border-0 py-2 md:px-6 px-2 focus:outline-none hover:bg-pink-600 rounded"
+                >
                   Buy now
                 </button>
 
@@ -244,5 +272,31 @@ const Slug = ({ addtoCard }) => {
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  if (!mongoose.connections[0].readyState) {
+    await mongoose.connect(process.env.MONGODB_URI);
+  }
+  let product = await Products.findOne({ slug: context.query.slug });
+  let variant = await Products.find({ title: product.title });
+
+  let colorSizeSlug = {};
+
+  for (let item of variant) {
+    if (Object.keys(colorSizeSlug).includes(item.color)) {
+      colorSizeSlug[item.color][item.size] = { slug: item.slug };
+    } else {
+      colorSizeSlug[item.color] = {};
+      colorSizeSlug[item.color][item.size] = { slug: item.slug };
+    }
+  }
+
+  return {
+    props: {
+      product: JSON.parse(JSON.stringify(product)),
+      variant: JSON.parse(JSON.stringify(colorSizeSlug)),
+    },
+  };
+}
 
 export default Slug;

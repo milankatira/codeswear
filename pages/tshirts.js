@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import Products from "../model/Product";
 
-import connectDb from "../middleware/mongoose";
 
 import mongoose from "mongoose";
 
