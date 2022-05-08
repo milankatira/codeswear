@@ -1,6 +1,27 @@
 import React from "react";
 import Link from "next/link";
+import { useState } from "react";
+import axios from "axios";
+
 const Login = () => {
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const user = await axios
+      .post("http://localhost:3000/api/login", {
+        email,
+        password,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
+  };
   return (
     <div>
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -23,7 +44,7 @@ const Login = () => {
               </Link>
             </p>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-8 space-y-6" onSubmit={(e) => handleSubmit(e)}>
             <input type="hidden" name="remember" value="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
@@ -34,6 +55,8 @@ const Login = () => {
                   id="email-address"
                   name="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setemail(e.target.value)}
                   autoComplete="email"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
@@ -48,6 +71,8 @@ const Login = () => {
                   id="password"
                   name="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
                   autoComplete="current-password"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
@@ -75,9 +100,7 @@ const Login = () => {
 
               <div className="text-sm">
                 <Link href={"/forgot"}>
-                  <a
-                    className="font-medium text-pink-600 hover:text-pink-500"
-                  >
+                  <a className="font-medium text-pink-600 hover:text-pink-500">
                     {" "}
                     Forgot your password?{" "}
                   </a>
