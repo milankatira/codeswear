@@ -1,6 +1,27 @@
 import React from "react";
 import Link from "next/link";
+import { useState } from "react";
+import axios from "axios";
+
 const Signup = () => {
+  const [name, setname] = useState("")
+  const [email, setemail] = useState("")
+  const [password, setpassword] = useState("")
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+    const user=await axios.post("http://localhost:3000/api/signup",{
+      name,
+      email,
+      password
+    }).then(res=>{
+      console.log(res.data)
+    }).catch(err=>{
+      console.log(err.response.data)
+    })
+
+  }
   return (
     <div>
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -23,17 +44,19 @@ const Signup = () => {
               </Link>
             </p>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-8 space-y-6" onSubmit={(e) => handleSubmit(e)}>
             <input type="hidden" name="remember" value="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
                 <label htmlFor="name" className="sr-only">
-                  Email name
+                  Name
                 </label>
                 <input
                   id="name"
                   name="name"
                   type="text"
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
                   autoComplete="name"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
@@ -53,6 +76,8 @@ const Signup = () => {
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
                   placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setemail(e.target.value)}
                 />
               </div>
               <div>
@@ -67,6 +92,8 @@ const Signup = () => {
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
                 />
               </div>
             </div>
